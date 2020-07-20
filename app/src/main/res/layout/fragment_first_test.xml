@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.hmelikyan.architecture.view.fragments.firstFragment.view_model.FirstTestViewModel" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.fragments.firstFragment.FirstTestFragment">
+
+        <Button
+            android:id="@+id/getTodosFor1"
+            android:text="Id = 1"
+            android:onClick='@{()->viewModel.onIdFirstClick()}'
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/getTodosFor2"
+            android:layout_alignParentEnd="true"
+            android:text="Id = 2"
+            android:onClick='@{()->viewModel.onIdSecondClick()}'
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cards_recycler"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_below="@id/getTodosFor1"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+</layout>
