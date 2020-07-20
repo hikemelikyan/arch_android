@@ -1,9 +1,6 @@
 package com.hmelikyan.architecture.shared.helpers
 
 import androidx.recyclerview.widget.DiffUtil
-import com.hmelikyan.architecture.shared.helpers.DiffUtilItemModel
-import com.hmelikyan.architecture.shared.helpers.isContentsTheSame
-import com.hmelikyan.architecture.shared.helpers.isTheSame
 
 open class DefaultDiffUtilCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {

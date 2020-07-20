@@ -41,4 +41,6 @@ abstract class BaseActivityMVVM<VB : ViewDataBinding, VM : BaseViewModel> : Base
 
     protected abstract fun processViewCommand(viewCommand: ViewCommand?)
 
+    protected abstract fun linkView()
+
 }
