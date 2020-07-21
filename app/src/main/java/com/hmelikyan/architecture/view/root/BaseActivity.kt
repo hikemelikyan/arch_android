@@ -21,11 +21,11 @@ open class BaseActivity : AppCompatActivity(), IBaseView {
     private var isLightStatusBar: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (getAppMode() == AppMode.DARK) {
+        /*if (getAppMode() == AppMode.DARK) {
             clearLightStatusBar()
         } else {
             setLightStatusBar()
-        }
+        }*/
         super.onCreate(savedInstanceState)
     }
 

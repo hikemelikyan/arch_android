@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.hmelikyan.architecture.R
+import com.hmelikyan.architecture.shared.extensions.isInternetAvailable
 import com.hmelikyan.architecture.shared.networking.NetworkError
 import com.hmelikyan.architecture.shared.networking.UnauthorizedException
-import com.hmelikyan.architecture.shared.extensions.isInternetAvailable
-import com.hmelikyan.architecture.R
 import com.hmelikyan.architecture.view.root.viewCommand.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +19,7 @@ import kotlin.coroutines.CoroutineContext
 open class BaseViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
 
     protected val _viewCommandsLiveData: MutableLiveData<ViewCommand> = MutableLiveData()
-
-    val viewCommands: LiveData<ViewCommand>
+     val viewCommands: LiveData<ViewCommand>
         get() = _viewCommandsLiveData
 
     protected suspend fun <T> handle(
@@ -33,26 +32,30 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
                 _viewCommandsLiveData.postValue(ShowLoadingViewCommand(it.first))
                 if (!it.first) {
                     if (it.second != null) {
-                        when (it.second) {
-                            is NetworkError -> {
-                                if (!isInternetAvailable()) {
-                                    _viewCommandsLiveData.postValue(NetworkErrorViewCommand())
-                                } else {
-                                    _viewCommandsLiveData.postValue(ShowMessageTextViewCommand((it.second as NetworkError).getAppErrorMessage()))
-                                }
-                            }
-                            is UnauthorizedException -> {
-                                _viewCommandsLiveData.postValue(RefreshTokenViewCommand())
-                            }
-                            else -> {
-                                _viewCommandsLiveData.postValue(ShowMessageViewCommand(R.string.default_error_message))
-                            }
-                        }
+                        exceptionHandler(it.second as Throwable)
                         doOnError?.invoke()
                     } else {
                         doOnSuccess.invoke(it.third)
                     }
                 }
+            }
+        }
+    }
+
+    private fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is NetworkError -> {
+                if (!isInternetAvailable()) {
+                    _viewCommandsLiveData.postValue(NetworkErrorViewCommand())
+                } else {
+                    _viewCommandsLiveData.postValue(ShowMessageTextViewCommand(exception.getAppErrorMessage()))
+                }
+            }
+            is UnauthorizedException -> {
+                _viewCommandsLiveData.postValue(RefreshTokenViewCommand())
+            }
+            else -> {
+                _viewCommandsLiveData.postValue(ShowMessageViewCommand(R.string.default_error_message))
             }
         }
     }

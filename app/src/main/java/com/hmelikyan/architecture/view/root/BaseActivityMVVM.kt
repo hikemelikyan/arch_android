@@ -1,6 +1,7 @@
 package com.hmelikyan.architecture.view.root
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -10,11 +11,11 @@ import com.hmelikyan.architecture.view.root.view_model.BaseViewModel
 abstract class BaseActivityMVVM<VB : ViewDataBinding, VM : BaseViewModel> : BaseActivity() {
 
     private lateinit var _binding: VB
-    protected val mBinding:VB
+    protected val mBinding: VB
         get() = _binding
 
     private lateinit var _viewModel: VM
-    protected val mViewModel:VM
+    protected val mViewModel: VM
         get() = _viewModel
 
     protected abstract val layoutResId: Int
@@ -23,10 +24,10 @@ abstract class BaseActivityMVVM<VB : ViewDataBinding, VM : BaseViewModel> : Base
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = DataBindingUtil.setContentView(this, layoutResId)
         _viewModel = ViewModelProviders.of(this).get(viewModelType)
-        _viewModel.viewCommands.observe(this, Observer {
-            processViewCommandGlobal(it)
-        })
+        _viewModel.viewCommands.observe(this, Observer { processViewCommandGlobal(it) })
+        linkView()
     }
 
     private fun processViewCommandGlobal(viewCommand: ViewCommand?) {

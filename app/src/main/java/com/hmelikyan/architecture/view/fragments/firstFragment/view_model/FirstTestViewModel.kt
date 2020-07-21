@@ -22,7 +22,7 @@ class FirstTestViewModel(
 
     fun onIdSecondClick() {
         launch {
-            handle(mService.getPosts(1)){
+            handle(mService.getPosts(2)){
                 _viewCommandsLiveData.postValue(UpdateList(it!!))
             }
         }

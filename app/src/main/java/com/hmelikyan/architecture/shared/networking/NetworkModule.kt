@@ -2,6 +2,7 @@ package com.hmelikyan.architecture.shared.networking
 
 import com.hmelikyan.architecture.App
 import com.hmelikyan.architecture.BuildConfig
+import com.readystatesoftware.chuck.ChuckInterceptor
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -15,6 +16,7 @@ object NetworkModule {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(Authenticator())
+        .addInterceptor(ChuckInterceptor(App.getInstance()))
 //        .addInterceptor(UnAuthorizedInterceptor())
         .cache(cache)
         .connectTimeout(60, TimeUnit.SECONDS)

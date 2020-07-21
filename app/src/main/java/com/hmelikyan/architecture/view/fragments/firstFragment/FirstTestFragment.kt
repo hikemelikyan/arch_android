@@ -3,6 +3,7 @@ package com.hmelikyan.architecture.view.fragments.firstFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hmelikyan.architecture.R
 import com.hmelikyan.architecture.databinding.FragmentFirstTestBinding
+import com.hmelikyan.architecture.model.CommentModel
 import com.hmelikyan.architecture.view.adapter.RecyclerAdapter
 import com.hmelikyan.architecture.view.fragments.firstFragment.viewCommand.NavigateToDetails
 import com.hmelikyan.architecture.view.fragments.firstFragment.viewCommand.UpdateList
@@ -43,4 +44,7 @@ class FirstTestFragment : BaseFragmentMVVM<FragmentFirstTestBinding, FirstTestVi
         }
     }
 
+    override fun isMainLoading(isLoading: Boolean) {
+        mBinding.isLoading = isLoading
+    }
 }

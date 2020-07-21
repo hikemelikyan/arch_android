@@ -2,15 +2,20 @@
 <layout>
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.hmelikyan.architecture.view.fragments.firstFragment.view_model.FirstTestViewModel" />
+        <variable
+            name="isLoading"
+            type="Boolean" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/darker_gray"
         tools:context=".view.fragments.firstFragment.FirstTestFragment">
 
         <Button
@@ -32,10 +37,15 @@
             android:id="@+id/cards_recycler"
             android:layout_width="match_parent"
             android:layout_marginTop="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:visibility='@{isLoading ? View.GONE : View.VISIBLE}'
             android:layout_below="@id/getTodosFor1"
             android:layout_height="wrap_content"/>
+
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:visibility='@{isLoading ? View.VISIBLE : View.GONE}'
+            android:layout_width="25dp"
+            android:layout_height="25dp"/>
 
     </RelativeLayout>
 </layout>
