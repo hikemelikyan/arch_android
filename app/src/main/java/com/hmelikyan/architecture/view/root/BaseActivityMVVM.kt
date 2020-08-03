@@ -35,7 +35,8 @@ abstract class BaseActivityMVVM<VB : ViewDataBinding, VM : BaseViewModel> : Base
             is NetworkErrorViewCommand -> onNetworkError()
             is ShowMessageViewCommand -> onError(viewCommand.resId)
             is ShowMessageTextViewCommand -> onError(viewCommand.errorMessage)
-            is ShowLoadingViewCommand -> isMainLoading(viewCommand.isLoading)
+            is ShowLoadingViewCommand -> isMainLoading(true)
+            is HideLoadingViewCommand -> isMainLoading(false)
             else -> processViewCommand(viewCommand)
         }
     }

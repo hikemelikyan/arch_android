@@ -1,6 +1,7 @@
 package com.hmelikyan.architecture.view.root.view_model
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,30 +13,40 @@ import com.hmelikyan.architecture.view.root.viewCommand.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlin.coroutines.CoroutineContext
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
-
     protected val _viewCommandsLiveData: MutableLiveData<ViewCommand> = MutableLiveData()
-     val viewCommands: LiveData<ViewCommand>
+
+    val viewCommands: MutableLiveData<ViewCommand>
         get() = _viewCommandsLiveData
 
     protected suspend fun <T> handle(
         processingTriple: Flow<Triple<Boolean, Throwable?, T?>?>,
+        isLoadingEnabled: Boolean = true,
         doOnError: (() -> Any)? = null,
         doOnSuccess: suspend (T?) -> Unit
     ) {
         processingTriple.collect {
             it?.let {
-                _viewCommandsLiveData.postValue(ShowLoadingViewCommand(it.first))
-                if (!it.first) {
+                Log.d("Response", it.toString())
+                if (it.first) {
+                    if (isLoadingEnabled)
+                        _viewCommandsLiveData.postValue(ShowLoadingViewCommand())
+                    else {
+                        //handle
+                    }
+                } else {
                     if (it.second != null) {
-                        exceptionHandler(it.second as Throwable)
+                        exceptionHandler(exception = it.second as Throwable)
                         doOnError?.invoke()
                     } else {
                         doOnSuccess.invoke(it.third)
+                        delay(300)
+                        _viewCommandsLiveData.postValue(HideLoadingViewCommand())
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.hmelikyan.architecture.view.root
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,44 +14,55 @@ import com.hmelikyan.architecture.view.root.view_model.BaseViewModel
 
 abstract class BaseFragmentMVVM<VB : ViewDataBinding, VM : BaseViewModel> : BaseFragment() {
 
-    private lateinit var _binding: VB
-    protected val mBinding:VB
-        get() = _binding
 
-    private lateinit var _viewModel: VM
-    protected val mViewModel:VM
-        get() = _viewModel
+    abstract class BaseFragmentMVVM<VB : ViewDataBinding, VM : BaseViewModel> : BaseFragment() {
 
-    protected abstract val layoutResId: Int
+        private lateinit var _binding: VB
+        protected val mBinding: VB
+            get() = _binding
 
-    protected abstract val viewModelType: Class<VM>
+        private lateinit var _viewModel: VM
+        protected val mViewModel: VM
+            get() = _viewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _viewModel = ViewModelProviders.of(this).get(viewModelType)
-        _viewModel.viewCommands.observe(this, Observer {
-            processViewCommandGlobal(it)
-        })
-    }
+        protected abstract val layoutResId: Int
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
-        _binding.lifecycleOwner = this
-        linkView()
-        return mBinding.root
-    }
+        protected abstract val viewModelType: Class<VM>
 
-    protected abstract fun linkView()
-
-    private fun processViewCommandGlobal(viewCommand: ViewCommand?) {
-        when (viewCommand) {
-            is NetworkErrorViewCommand -> onNetworkError()
-            is ShowMessageViewCommand -> onError(viewCommand.resId)
-            is ShowMessageTextViewCommand -> onError(viewCommand.errorMessage)
-            is ShowLoadingViewCommand -> isMainLoading(viewCommand.isLoading)
-            else -> processViewCommand(viewCommand)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            _viewModel = ViewModelProviders.of(this).get(viewModelType)
+            _viewModel.viewCommands.observe(this, Observer {
+                processViewCommandGlobal(it)
+            })
         }
-    }
 
-    protected abstract fun processViewCommand(viewCommand: ViewCommand?)
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            _binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
+            _binding.lifecycleOwner = this
+            linkView()
+            return mBinding.root
+        }
+
+        protected abstract fun linkView()
+
+        private fun processViewCommandGlobal(viewCommand: ViewCommand?) {
+            Log.d("Response", viewCommand.toString())
+
+            when (viewCommand) {
+                is NetworkErrorViewCommand -> onNetworkError()
+                is ShowMessageViewCommand -> onError(viewCommand.resId)
+                is ShowMessageTextViewCommand -> onError(viewCommand.errorMessage)
+                is ShowLoadingViewCommand -> isMainLoading(true)
+                is HideLoadingViewCommand -> isMainLoading(false)
+                else -> processViewCommand(viewCommand)
+            }
+        }
+
+        protected abstract fun processViewCommand(viewCommand: ViewCommand?)
+    }
 }
